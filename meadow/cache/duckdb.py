@@ -13,12 +13,14 @@ class DuckDBCache(Cache):
         self.cache_file = cache_file if cache_file else ".duckdb.cache"
         self.conn = duckdb.connect(self.cache_file)
         self.cur = self.conn.cursor()
-        self.cur.execute("""
+        self.cur.execute(
+            """
             CREATE TABLE IF NOT EXISTS cache (
                 key VARCHAR PRIMARY KEY,
                 value VARCHAR
             )
-        """)
+        """
+        )
 
     def close(self) -> None:
         """Close the cache."""

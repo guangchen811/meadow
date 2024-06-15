@@ -169,7 +169,11 @@ def generate_sql(
             database: Database = agent._planner._database
             sql = database.normalize_query(sql)
             if "Table:" in last_sql_message.display_content:
-                tbl = last_sql_message.display_content.split("Table:")[1].split("Warning:")[0].strip()
+                tbl = (
+                    last_sql_message.display_content.split("Table:")[1]
+                    .split("Warning:")[0]
+                    .strip()
+                )
             else:
                 tbl = ""
         # print("FINAL SQL", sql, "\n\n", tbl)
@@ -329,7 +333,9 @@ def predict(
     )
 
     console.print("Loading metadata...")
-    db_to_tables = read_tables_json(table_meta_path, database_path, lowercase=lowercase_schema)
+    db_to_tables = read_tables_json(
+        table_meta_path, database_path, lowercase=lowercase_schema
+    )
 
     console.print("Loading data...")
     data = load_data(dataset_path)
@@ -367,12 +373,12 @@ def predict(
         run_name = f"{run_name}_"
 
     agent_type_str = (
-        ("reask_" if add_reask else "") +
-        ("empty_" if add_empty_table else "") +
-        ("decomposer_" if add_decomposer else "") +
-        ("sqlplanner_" if add_sql_planner else "") +
-        ("attribute_" if add_attribute_selector else "") +
-        ("cleaner_" if add_schema_cleaner else "")
+        ("reask_" if add_reask else "")
+        + ("empty_" if add_empty_table else "")
+        + ("decomposer_" if add_decomposer else "")
+        + ("sqlplanner_" if add_sql_planner else "")
+        + ("attribute_" if add_attribute_selector else "")
+        + ("cleaner_" if add_schema_cleaner else "")
     )
     agent_type_str = agent_type_str.rstrip("_")
     suffix = f"{run_name}{full_dataset_path.stem}_{date_today}.json"  # noqa: E501

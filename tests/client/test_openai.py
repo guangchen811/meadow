@@ -4,20 +4,13 @@ import pytest
 from openai.types.chat.chat_completion import ChatCompletion, Choice
 from openai.types.chat.chat_completion_message import ChatCompletionMessage
 from openai.types.chat.chat_completion_message_tool_call import (
-    ChatCompletionMessageToolCall,
-    Function,
-)
+    ChatCompletionMessageToolCall, Function)
 from openai.types.completion_usage import CompletionUsage
 
 from meadow.client.api.openai import OpenAIClient
-from meadow.client.schema import (
-    ChatMessage,
-    ChatRequest,
-    ChatResponse,
-    Choice as MeadowChoice,
-    ToolCall,
-    Usage,
-)
+from meadow.client.schema import ChatMessage, ChatRequest, ChatResponse
+from meadow.client.schema import Choice as MeadowChoice
+from meadow.client.schema import ToolCall, Usage
 
 
 @pytest.fixture

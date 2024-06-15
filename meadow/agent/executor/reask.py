@@ -5,11 +5,9 @@ import logging
 from typing import Callable
 
 from meadow.agent.agent import Agent, ExecutorAgent
-from meadow.agent.schema import AgentMessage, ClientMessageRole, ExecutorFunctionInput
-from meadow.agent.utils import (
-    generate_llm_reply,
-    print_message,
-)
+from meadow.agent.schema import (AgentMessage, ClientMessageRole,
+                                 ExecutorFunctionInput)
+from meadow.agent.utils import generate_llm_reply, print_message
 from meadow.client.client import Client
 from meadow.client.schema import LLMConfig
 from meadow.database.database import Database

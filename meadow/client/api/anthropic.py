@@ -6,14 +6,8 @@ from anthropic import AsyncAnthropic
 from anthropic.types.beta.tools.tools_beta_message import ToolsBetaMessage
 
 from meadow.client.api.api_client import APIClient
-from meadow.client.schema import (
-    ChatMessage,
-    ChatRequest,
-    ChatResponse,
-    Choice,
-    ToolCall,
-    Usage,
-)
+from meadow.client.schema import (ChatMessage, ChatRequest, ChatResponse,
+                                  Choice, ToolCall, Usage)
 
 logger = logging.getLogger(__name__)
 

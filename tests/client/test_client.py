@@ -5,7 +5,8 @@ import pytest
 from meadow.cache.cache import Cache
 from meadow.client.api.api_client import APIClient
 from meadow.client.client import Client
-from meadow.client.schema import ChatMessage, ChatResponse, Choice, ToolCall, Usage
+from meadow.client.schema import (ChatMessage, ChatResponse, Choice, ToolCall,
+                                  Usage)
 
 
 @pytest.fixture

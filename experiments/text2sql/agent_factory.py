@@ -6,15 +6,16 @@ from pydantic import BaseModel
 from meadow.agent.agent import Agent
 from meadow.agent.controller import ControllerAgent
 from meadow.agent.data_agents.attribute_detector import AttributeDetectorAgent
-from meadow.agent.data_agents.planner_constraints import attribute_detector_constraints, sql_agent_constraints
+from meadow.agent.data_agents.planner_constraints import (
+    attribute_detector_constraints, sql_agent_constraints)
 from meadow.agent.data_agents.schema_renamer import SchemaRenamerAgent
 from meadow.agent.data_agents.sql_decomposer import SQLDecomposerAgent
 from meadow.agent.data_agents.sql_planner import SQLPlannerAgent
 from meadow.agent.data_agents.text2sql import SQLGeneratorAgent
-from meadow.agent.executor.data_executors.empty_result_debugger import (
-    EmptyResultExecutor,
-)
-from meadow.agent.executor.data_executors.sql_validate_reask import SQLValidateExecutor
+from meadow.agent.executor.data_executors.empty_result_debugger import \
+    EmptyResultExecutor
+from meadow.agent.executor.data_executors.sql_validate_reask import \
+    SQLValidateExecutor
 from meadow.agent.planner import PlannerAgent
 from meadow.agent.user import UserAgent
 from meadow.client.client import Client
@@ -42,6 +43,7 @@ Output the remapping in JSON in the following format:
 }
 
 Make sure all new column names are unique. Try to keep changes to a minimum and keep columns as short as possible."""
+
 
 class PromptLog(BaseModel):
     """Prompt log."""
@@ -105,7 +107,11 @@ def get_text2sql_agent(
 ) -> Agent:
     """Get a text2sql agent with optional components."""
     callback_sql: Callable = lambda model_messages, chat_response: model_callback(
-        model_messages, chat_response, example_idx, "SQLGeneratorAgent", all_prompts_to_save
+        model_messages,
+        chat_response,
+        example_idx,
+        "SQLGeneratorAgent",
+        all_prompts_to_save,
     )
 
     executors = [
@@ -119,7 +125,11 @@ def get_text2sql_agent(
 
     if add_empty_table:
         callback_empty: Callable = lambda model_messages, chat_response: model_callback(
-            model_messages, chat_response, example_idx, "EmptyResultExecutor", all_prompts_to_save
+            model_messages,
+            chat_response,
+            example_idx,
+            "EmptyResultExecutor",
+            all_prompts_to_save,
         )
         executors.append(
             EmptyResultExecutor(
@@ -142,8 +152,14 @@ def get_text2sql_agent(
     agents = [text2sql]
 
     if add_decomposer:
-        callback_decomp: Callable = lambda model_messages, chat_response: model_callback(
-            model_messages, chat_response, example_idx, "DecomposerAgent", all_prompts_to_save
+        callback_decomp: Callable = (
+            lambda model_messages, chat_response: model_callback(
+                model_messages,
+                chat_response,
+                example_idx,
+                "DecomposerAgent",
+                all_prompts_to_save,
+            )
         )
         text2sql_decomposer = SQLDecomposerAgent(
             client=planner_client,
@@ -155,8 +171,14 @@ def get_text2sql_agent(
         agents.insert(0, text2sql_decomposer)
 
     if add_sql_planner:
-        callback_planner: Callable = lambda model_messages, chat_response: model_callback(
-            model_messages, chat_response, example_idx, "PlannerAgent", all_prompts_to_save
+        callback_planner: Callable = (
+            lambda model_messages, chat_response: model_callback(
+                model_messages,
+                chat_response,
+                example_idx,
+                "PlannerAgent",
+                all_prompts_to_save,
+            )
         )
         sql_planner = SQLPlannerAgent(
             client=planner_client,
@@ -169,7 +191,11 @@ def get_text2sql_agent(
 
     if add_attribute_selector:
         callback_attr: Callable = lambda model_messages, chat_response: model_callback(
-            model_messages, chat_response, example_idx, "AttributeDetectorAgent", all_prompts_to_save
+            model_messages,
+            chat_response,
+            example_idx,
+            "AttributeDetectorAgent",
+            all_prompts_to_save,
         )
         attribute_detector = AttributeDetectorAgent(
             client=client,
@@ -181,7 +207,11 @@ def get_text2sql_agent(
 
     if add_schema_cleaner:
         callback_clean: Callable = lambda model_messages, chat_response: model_callback(
-            model_messages, chat_response, example_idx, "SchemaCleanerAgent", all_prompts_to_save
+            model_messages,
+            chat_response,
+            example_idx,
+            "SchemaCleanerAgent",
+            all_prompts_to_save,
         )
         schema_cleaner = SchemaRenamerAgent(
             client=client,

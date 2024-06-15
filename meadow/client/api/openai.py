@@ -2,14 +2,8 @@ from openai import AsyncOpenAI
 from openai.types.chat import ChatCompletion
 
 from meadow.client.api.api_client import APIClient
-from meadow.client.schema import (
-    ChatMessage,
-    ChatRequest,
-    ChatResponse,
-    Choice,
-    ToolCall,
-    Usage,
-)
+from meadow.client.schema import (ChatMessage, ChatRequest, ChatResponse,
+                                  Choice, ToolCall, Usage)
 
 
 class OpenAIClient(APIClient):

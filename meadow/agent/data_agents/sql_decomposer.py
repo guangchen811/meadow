@@ -8,17 +8,10 @@ from typing import Callable
 
 from pydantic import BaseModel
 
-from meadow.agent.agent import (
-    Agent,
-    LLMPlannerAgent,
-    SubTask,
-)
+from meadow.agent.agent import Agent, LLMPlannerAgent, SubTask
 from meadow.agent.data_agents.text2sql import SQLGeneratorAgent
 from meadow.agent.schema import AgentMessage, ClientMessageRole, Commands
-from meadow.agent.utils import (
-    generate_llm_reply,
-    print_message,
-)
+from meadow.agent.utils import generate_llm_reply, print_message
 from meadow.client.client import Client
 from meadow.client.schema import LLMConfig
 from meadow.database.database import Database

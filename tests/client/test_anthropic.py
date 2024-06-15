@@ -7,16 +7,10 @@ from anthropic.types.text_block import TextBlock
 from anthropic.types.usage import Usage
 
 from meadow.client.api.anthropic import AnthropicClient
-from meadow.client.schema import (
-    ChatMessage,
-    ChatRequest,
-    ChatResponse,
-    Choice as MeadowChoice,
-    FunctionArgSpec,
-    ToolCall,
-    ToolSpec,
-    Usage as MeadowUsage,
-)
+from meadow.client.schema import ChatMessage, ChatRequest, ChatResponse
+from meadow.client.schema import Choice as MeadowChoice
+from meadow.client.schema import FunctionArgSpec, ToolCall, ToolSpec
+from meadow.client.schema import Usage as MeadowUsage
 
 
 @pytest.fixture
@@ -119,32 +113,27 @@ def test_convert_anthropic_to_response(
 ) -> None:
     """Test conversion of Anthropic response to ChatResponse."""
     response = anthropic_client.convert_anthropic_to_response(chat_completion)
-    assert (
-        response
-        == ChatResponse(
-            id="msg_01Tmqpke9uViGL1uYuoa2H2C",
-            cached=False,
-            choices=[
-                MeadowChoice(
-                    index=0,
-                    message=ChatMessage(
-                        content='<thinking>\nThe user has directly provided a question to ask the query_gen tool:\n"How many cats do I have?"\n\nSince the query_gen tool takes a single required parameter "question" of type string, and the user has provided the question string, we have all the required information to call the tool.\n</thinking>',
-                        role="assistant",
-                        tool_calls=[
-                            ToolCall(
-                                unparsed_arguments='{"question": "How many cats do I have?"}',
-                                name="query_gen",
-                            )
-                        ],
-                    ),
-                )
-            ],
-            created=response.created,  # hack to match the timestamps as we add time in the conversion
-            model="claude-3-opus-20240229",
-            usage=MeadowUsage(
-                completion_tokens=100, prompt_tokens=495, total_tokens=595
-            ),
-        )
+    assert response == ChatResponse(
+        id="msg_01Tmqpke9uViGL1uYuoa2H2C",
+        cached=False,
+        choices=[
+            MeadowChoice(
+                index=0,
+                message=ChatMessage(
+                    content='<thinking>\nThe user has directly provided a question to ask the query_gen tool:\n"How many cats do I have?"\n\nSince the query_gen tool takes a single required parameter "question" of type string, and the user has provided the question string, we have all the required information to call the tool.\n</thinking>',
+                    role="assistant",
+                    tool_calls=[
+                        ToolCall(
+                            unparsed_arguments='{"question": "How many cats do I have?"}',
+                            name="query_gen",
+                        )
+                    ],
+                ),
+            )
+        ],
+        created=response.created,  # hack to match the timestamps as we add time in the conversion
+        model="claude-3-opus-20240229",
+        usage=MeadowUsage(completion_tokens=100, prompt_tokens=495, total_tokens=595),
     )
 
 
@@ -168,45 +157,40 @@ def test_convert_anthropic_to_multi_messageresponse(
         ]
     )
     response = anthropic_client.convert_anthropic_to_response(chat_completion)
-    assert (
-        response
-        == ChatResponse(
-            id="msg_01Tmqpke9uViGL1uYuoa2H2C",
-            cached=False,
-            choices=[
-                MeadowChoice(
-                    index=0,
-                    message=ChatMessage(
-                        content='<thinking>\nThe user has directly provided a question to ask the query_gen tool:\n"How many cats do I have?"\n\nSince the query_gen tool takes a single required parameter "question" of type string, and the user has provided the question string, we have all the required information to call the tool.\n</thinking>',
-                        role="assistant",
-                        tool_calls=[
-                            ToolCall(
-                                unparsed_arguments='{"question": "How many cats do I have?"}',
-                                name="query_gen",
-                            )
-                        ],
-                    ),
+    assert response == ChatResponse(
+        id="msg_01Tmqpke9uViGL1uYuoa2H2C",
+        cached=False,
+        choices=[
+            MeadowChoice(
+                index=0,
+                message=ChatMessage(
+                    content='<thinking>\nThe user has directly provided a question to ask the query_gen tool:\n"How many cats do I have?"\n\nSince the query_gen tool takes a single required parameter "question" of type string, and the user has provided the question string, we have all the required information to call the tool.\n</thinking>',
+                    role="assistant",
+                    tool_calls=[
+                        ToolCall(
+                            unparsed_arguments='{"question": "How many cats do I have?"}',
+                            name="query_gen",
+                        )
+                    ],
                 ),
-                MeadowChoice(
-                    index=1,
-                    message=ChatMessage(
-                        content="<thinking>I guess I should really get on this</thinking>",
-                        role="assistant",
-                        tool_calls=[
-                            ToolCall(
-                                unparsed_arguments='{"question": "Cats are dead to me?"}',
-                                name="query_gen",
-                            )
-                        ],
-                    ),
-                ),
-            ],
-            created=response.created,  # hack to match the timestamps as we add time in the conversion
-            model="claude-3-opus-20240229",
-            usage=MeadowUsage(
-                completion_tokens=100, prompt_tokens=495, total_tokens=595
             ),
-        )
+            MeadowChoice(
+                index=1,
+                message=ChatMessage(
+                    content="<thinking>I guess I should really get on this</thinking>",
+                    role="assistant",
+                    tool_calls=[
+                        ToolCall(
+                            unparsed_arguments='{"question": "Cats are dead to me?"}',
+                            name="query_gen",
+                        )
+                    ],
+                ),
+            ),
+        ],
+        created=response.created,  # hack to match the timestamps as we add time in the conversion
+        model="claude-3-opus-20240229",
+        usage=MeadowUsage(completion_tokens=100, prompt_tokens=495, total_tokens=595),
     )
 
 
@@ -224,32 +208,27 @@ async def test_arun_chat(
     anthropic_client.client.beta.tools.messages.create.assert_called_once_with(
         **anthropic_client.convert_request_for_anthropic(chat_request), system=None
     )
-    assert (
-        response
-        == ChatResponse(
-            id="msg_01Tmqpke9uViGL1uYuoa2H2C",
-            cached=False,
-            choices=[
-                MeadowChoice(
-                    index=0,
-                    message=ChatMessage(
-                        content='<thinking>\nThe user has directly provided a question to ask the query_gen tool:\n"How many cats do I have?"\n\nSince the query_gen tool takes a single required parameter "question" of type string, and the user has provided the question string, we have all the required information to call the tool.\n</thinking>',
-                        role="assistant",
-                        tool_calls=[
-                            ToolCall(
-                                unparsed_arguments='{"question": "How many cats do I have?"}',
-                                name="query_gen",
-                            )
-                        ],
-                    ),
-                )
-            ],
-            created=response.created,  # hack to match the timestamps as we add time in the conversion
-            model="claude-3-opus-20240229",
-            usage=MeadowUsage(
-                completion_tokens=100, prompt_tokens=495, total_tokens=595
-            ),
-        )
+    assert response == ChatResponse(
+        id="msg_01Tmqpke9uViGL1uYuoa2H2C",
+        cached=False,
+        choices=[
+            MeadowChoice(
+                index=0,
+                message=ChatMessage(
+                    content='<thinking>\nThe user has directly provided a question to ask the query_gen tool:\n"How many cats do I have?"\n\nSince the query_gen tool takes a single required parameter "question" of type string, and the user has provided the question string, we have all the required information to call the tool.\n</thinking>',
+                    role="assistant",
+                    tool_calls=[
+                        ToolCall(
+                            unparsed_arguments='{"question": "How many cats do I have?"}',
+                            name="query_gen",
+                        )
+                    ],
+                ),
+            )
+        ],
+        created=response.created,  # hack to match the timestamps as we add time in the conversion
+        model="claude-3-opus-20240229",
+        usage=MeadowUsage(completion_tokens=100, prompt_tokens=495, total_tokens=595),
     )
 
     # now test that if the first message is a system message, we pass it as `system`

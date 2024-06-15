@@ -3,7 +3,8 @@
 import logging
 
 from meadow.agent.agent import Agent, AgentRole, ExecutorAgent, LLMPlannerAgent
-from meadow.agent.planner import PlannerAgent, parse_replacements_in_instruction
+from meadow.agent.planner import (PlannerAgent,
+                                  parse_replacements_in_instruction)
 from meadow.agent.schema import AgentMessage, ClientMessageRole, Commands
 from meadow.agent.utils import print_message
 from meadow.database.database import Database

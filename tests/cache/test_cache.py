@@ -3,7 +3,8 @@ import uuid
 import pytest
 
 from meadow.cache.cache import Cache
-from meadow.client.schema import ChatMessage, ChatRequest, ChatResponse, Choice, Usage
+from meadow.client.schema import (ChatMessage, ChatRequest, ChatResponse,
+                                  Choice, Usage)
 
 
 def test_set_and_get_none(duckdb_cache: tuple[Cache, str]) -> None:

@@ -5,10 +5,7 @@ from typing import Callable
 
 from meadow.agent.agent import Agent, LLMAgent
 from meadow.agent.schema import AgentMessage, ClientMessageRole
-from meadow.agent.utils import (
-    generate_llm_reply,
-    print_message,
-)
+from meadow.agent.utils import generate_llm_reply, print_message
 from meadow.client.client import Client
 from meadow.client.schema import LLMConfig
 from meadow.database.database import Database

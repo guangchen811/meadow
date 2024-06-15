@@ -2,17 +2,13 @@ import pandas as pd
 
 from meadow.database.connector.connector import Column, Table
 from meadow.database.connector.duckdb import DuckDBConnector
-from meadow.database.database import (
-    Database,
-    _get_base_remapping_sql,
-    add_base_table_remaps_as_ctes,
-    add_views_as_ctes,
-    check_if_non_select_query,
-    extract_columns_from_df,
-    get_non_matching_fks,
-    map_dtype_to_sql,
-    validate_sql,
-)
+from meadow.database.database import (Database, _get_base_remapping_sql,
+                                      add_base_table_remaps_as_ctes,
+                                      add_views_as_ctes,
+                                      check_if_non_select_query,
+                                      extract_columns_from_df,
+                                      get_non_matching_fks, map_dtype_to_sql,
+                                      validate_sql)
 
 
 def test_validate_sql() -> None:

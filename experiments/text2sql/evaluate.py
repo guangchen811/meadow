@@ -18,15 +18,11 @@ from meadow.client.client import Client
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "."))
 # from metrics.spider import evaluation as spider_evaluation  # type: ignore # noqa: E402
-from metrics.test_suite_sql_eval import (  # type: ignore # noqa: E402
-    evaluation as test_suite_evaluation,
-)
+from metrics.test_suite_sql_eval import \
+    evaluation as test_suite_evaluation  # type: ignore # noqa: E402
 
 from experiments.text2sql.utils import (  # type: ignore  # noqa: E402
-    correct_casing,
-    edit_distance,
-    execution_accuracy,
-)
+    correct_casing, edit_distance, execution_accuracy)
 from meadow.client.api.openai import OpenAIClient
 from meadow.database.connector.sqlite import SQLiteConnector
 from meadow.database.database import Database
@@ -172,10 +168,14 @@ def compute_execution_accuracy(
     for gold_sql, pred_sql, gold_db in tqdm(
         zip(gold_sqls, pred_sqls, gold_dbs), total=len(gold_sqls), desc="Exec Acc Ours"
     ):
-        connector = SQLiteConnector(db_path = str(Path(db_dir) / gold_db / f"{gold_db}.sqlite"))
+        connector = SQLiteConnector(
+            db_path=str(Path(db_dir) / gold_db / f"{gold_db}.sqlite")
+        )
         database = Database(connector=connector)
         try:
-            exec_score, empty_res_score, empty_res_gold_score = execution_accuracy(gold_sql, pred_sql, database, client)
+            exec_score, empty_res_score, empty_res_gold_score = execution_accuracy(
+                gold_sql, pred_sql, database, client
+            )
             scores.append(exec_score)
             empty_res_scores.append(empty_res_score)
             empty_res_gold_scores.append(empty_res_gold_score)
@@ -184,8 +184,17 @@ def compute_execution_accuracy(
             empty_res_scores.append(0)
             empty_res_gold_scores.append(0)
             pass
-    print("PERCENT EMPTY GOLD", (len(empty_res_gold_scores) - sum(empty_res_gold_scores)) / len(empty_res_gold_scores))
-    return sum(scores) / len(scores), sum(empty_res_scores) / len(empty_res_scores), scores, empty_res_scores
+    print(
+        "PERCENT EMPTY GOLD",
+        (len(empty_res_gold_scores) - sum(empty_res_gold_scores))
+        / len(empty_res_gold_scores),
+    )
+    return (
+        sum(scores) / len(scores),
+        sum(empty_res_scores) / len(empty_res_scores),
+        scores,
+        empty_res_scores,
+    )
 
 
 def compute_metrics(
@@ -346,16 +355,17 @@ def evaluate(
     pred_sqls_dict = [json.loads(ll) for ll in pred_path.open("r").readlines()]
 
     pred_db_id_question = set([(p["db_id"], p["question"]) for p in pred_sqls_dict])
-    gold_sqls_dict = [g for g in gold_sqls_dict if (g["db_id"], g["question"]) in pred_db_id_question]
+    gold_sqls_dict = [
+        g for g in gold_sqls_dict if (g["db_id"], g["question"]) in pred_db_id_question
+    ]
     # Data validation
     assert len(gold_sqls_dict) == len(
         pred_sqls_dict
     ), "Sample size doesn't match between pred and gold file"
 
     if correct_flight_issue:
-        def _remap_where_sql(
-            node: sqlglot.Expression
-        ) -> sqlglot.Expression:
+
+        def _remap_where_sql(node: sqlglot.Expression) -> sqlglot.Expression:
             """Remap tables."""
             if isinstance(node, sqlglot.exp.Where):
                 new_lhs = sqlglot.parse_one(f"TRIM({node.this.this.sql()})")

@@ -67,8 +67,7 @@ def read_tables_json(
 
         data_sample_query = "SELECT DISTINCT * FROM {} LIMIT 5"
         dfs = [
-            connector.run_sql_to_df(data_sample_query.format(tn))
-            for tn in table_names
+            connector.run_sql_to_df(data_sample_query.format(tn)) for tn in table_names
         ]
 
         pks = db["primary_keys"]
@@ -145,7 +144,10 @@ def edit_distance(s1: str, s2: str) -> int:
 
 
 def compare_pred_ref(
-    pred_df: pd.DataFrame, ref_df: pd.DataFrame, ref_to_pred_col_map: dict[str, str], row_order_matters: bool
+    pred_df: pd.DataFrame,
+    ref_df: pd.DataFrame,
+    ref_to_pred_col_map: dict[str, str],
+    row_order_matters: bool,
 ) -> tuple[float, str]:
     """Compare the input dataframes and see if they have the same content.
 
@@ -161,7 +163,11 @@ def compare_pred_ref(
     """
     # For each column in the ref_df, find the matching column (if exists) in the
     # pred_df and compare the values via F1 (if order doesn't matter) or directly (if order matters)
-    pred_cols_mapped = [ref_to_pred_col_map.get(ref_col) for ref_col in ref_df.columns if ref_to_pred_col_map.get(ref_col) is not None]
+    pred_cols_mapped = [
+        ref_to_pred_col_map.get(ref_col)
+        for ref_col in ref_df.columns
+        if ref_to_pred_col_map.get(ref_col) is not None
+    ]
     pred_df_to_compare = pred_df[pred_cols_mapped]
     if not row_order_matters:
         pred_df_to_compare = pred_df_to_compare.sort_values(by=pred_cols_mapped)
@@ -180,7 +186,7 @@ def compare_pred_ref(
             similarity = 1
         else:
             similarity = textdistance.levenshtein.similarity(ref_col, pred_col)
-        score = (similarity / max(len(ref_col), len(pred_col), 1))
+        score = similarity / max(len(ref_col), len(pred_col), 1)
         total_scores.append(score)
     return sum(total_scores) / len(total_scores)
 
@@ -205,7 +211,7 @@ def execution_accuracy(
     prompt = [
         {
             "role": "system",
-            "content": """Please output a JSON map of the reference columns to the predicted columns given the dataframes. Make you best guess as to which columns map to which. If there is a column in either table that doesn't match, please leave it out."""
+            "content": """Please output a JSON map of the reference columns to the predicted columns given the dataframes. Make you best guess as to which columns map to which. If there is a column in either table that doesn't match, please leave it out.""",
         },
         {
             "role": "user",
@@ -213,10 +219,12 @@ def execution_accuracy(
 {df_gold.head(10).to_string()}
 
 Predicted DataFrames:
-{df_pred.head(10).to_string()}"""
-        }
+{df_pred.head(10).to_string()}""",
+        },
     ]
-    result = asyncio.run(client.chat(messages=prompt, response_format={"type": "json_object"}))
+    result = asyncio.run(
+        client.chat(messages=prompt, response_format={"type": "json_object"})
+    )
 
     ref_to_pred_col_map = json.loads(result.choices[0].message.content)
 
@@ -227,7 +235,9 @@ Predicted DataFrames:
     row_order_matters = parsed.args.get("order") is not None
 
     # Compare the two dataframes
-    final_score = compare_pred_ref(df_pred, df_gold, ref_to_pred_col_map, row_order_matters=row_order_matters)
+    final_score = compare_pred_ref(
+        df_pred, df_gold, ref_to_pred_col_map, row_order_matters=row_order_matters
+    )
     # Check if pred empty or None value
     if df_pred.empty or all(df_pred.isnull().all()):
         empty_res = 0

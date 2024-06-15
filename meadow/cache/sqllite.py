@@ -13,12 +13,14 @@ class SQLiteCache(Cache):
         self.cache_file = cache_file if cache_file else ".sqlite.cache"
         self.sql = sqlite3.connect(self.cache_file)
         self.cursor = self.sql.cursor()
-        self.cursor.execute("""
+        self.cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS cache (
                 key TEXT PRIMARY KEY,
                 value TEXT
             )
-        """)
+        """
+        )
         self.commit()
 
     def close(self) -> None:
